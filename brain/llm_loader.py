@@ -1,24 +1,24 @@
 import subprocess
 
 OLLAMA_PATH = r"C:\Users\prathamesh.p\AppData\Local\Programs\Ollama\ollama.exe"
-MODEL_NAME = "phi3"
+MODEL_NAME = "llama3"
 
-def query_llm(user_prompt: str) -> str:
 
-    system_prompt = """
-You are Jarvis, a smart, calm, minimal AI assistant.
+SYSTEM_PROMPT = """You are Jarvis, a helpful AI assistant.
 
 Rules:
-- Reply in the SAME language the user used.
-- Keep responses short and natural.
-- Do NOT be dramatic.
-- Do NOT add motivational lines.
-- Do NOT explain unnecessary details.
-- If Hindi/Marathi/Urdu is spoken, reply fluently in that language.
-- If English is spoken, reply in clear simple English.
+- Reply ONLY in English.
+- Be concise and natural.
+- Answer directly.
+- No roleplay.
+- No example conversations.
+- No motivational lines.
+- No unnecessary explanations.
 """
 
-    final_prompt = system_prompt + "\nUser: " + user_prompt + "\nJarvis:"
+
+def query_llm(user_prompt: str) -> str:
+    final_prompt = f"{SYSTEM_PROMPT}\nUser: {user_prompt}\nJarvis:"
 
     result = subprocess.run(
         [OLLAMA_PATH, "run", MODEL_NAME],
@@ -29,3 +29,8 @@ Rules:
     )
 
     return result.stdout.strip()
+
+
+# Quick test
+if __name__ == "__main__":
+    print(query_llm("Hello Jarvis, are you online?"))
