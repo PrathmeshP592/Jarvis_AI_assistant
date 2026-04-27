@@ -1,6 +1,6 @@
 import requests
 
-MODEL_NAME = "llama3:latest"
+MODEL_NAME = "phi3:latest"
 OLLAMA_URL = "http://localhost:11434/api/generate"
 
 SYSTEM_PROMPT = """
@@ -15,6 +15,11 @@ Rules:
 - Be concise.
 - Sound confident, modern and practical.
 - Avoid excessive enthusiasm.
+- Be concise.
+- Answer directly.
+- Do not mention unrelated topics.
+- Do not assume user interests.
+- Sound helpful and modern.
 """
 
 def query_llm(user_prompt: str) -> str:
