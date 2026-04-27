@@ -1,43 +1,43 @@
-import subprocess
+import requests
 
-OLLAMA_PATH = r"C:\Users\prathamesh.p\AppData\Local\Programs\Ollama\ollama.exe"
-MODEL_NAME = "llama3"
+MODEL_NAME = "llama3:latest"
+OLLAMA_URL = "http://localhost:11434/api/generate"
 
-
-SYSTEM_PROMPT = """You are Jarvis, a helpful AI assistant.
+SYSTEM_PROMPT = """
+You are Jarvis, a smart local AI assistant.
 
 Rules:
-- Reply ONLY in English.
-- Be concise, clear, friendly and natural.
-- Answer directly.
-- No roleplay.
-- No example conversations.
-- No motivational lines.
-- No unnecessary explanations.
-- Do NOT sound like a textbook or blog
-- Be clear, friendly and natural
-- Answer like you are chatting, not writing an article
-- If listing things, speak them in sentence form
-- Talk normally (no bullet points unless user asks)
+- Speak naturally like a helpful human assistant.
+- Avoid repeating greetings.
+- Do not say "great to chat" often.
+- Give direct useful answers.
+- If user asks vague question, answer intelligently first, then ask one short follow-up.
+- Be concise.
+- Sound confident, modern and practical.
+- Avoid excessive enthusiasm.
 """
 
-
 def query_llm(user_prompt: str) -> str:
-    final_prompt = f"{SYSTEM_PROMPT}\nUser: {user_prompt}\nJarvis:"
+    prompt = f"{SYSTEM_PROMPT}\n\nUser: {user_prompt}\nJarvis:"
 
-    result = subprocess.run(
-        [OLLAMA_PATH, "run", MODEL_NAME],
-        input=final_prompt,
-        text=True,
-        encoding="utf-8",
-        capture_output=True
-    )
+    try:
+        response = requests.post(
+            OLLAMA_URL,
+            json={
+                "model": MODEL_NAME,
+                "prompt": prompt,
+                "stream": False,
+                "options": {
+                    "temperature": 0.6
+                }
+            },
+            timeout=120
+        )
 
-    # return result.stdout.strip()
-    output = result.stdout.strip()
-    return output if output else "I did not generate a response."
+        response.raise_for_status()
 
+        data = response.json()
+        return data.get("response", "").strip() or "I did not generate a response."
 
-# Quick test
-if __name__ == "__main__":
-    print(query_llm("Hello Jarvis, are you online?"))
+    except Exception as e:
+        return f"LLM Error: {str(e)}"

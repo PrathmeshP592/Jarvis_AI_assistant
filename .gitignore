@@ -15,3 +15,8 @@ venv/
 env/
 # other common venv names
 # ...
+
+# Jarvis runtime files
+input.wav
+memory_db/
+*.log

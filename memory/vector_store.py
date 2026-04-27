@@ -43,14 +43,18 @@ def recall_chat(query, n_results=4):
 
 # ========= SMART MEMORY =========
 
-def process_memory(user_input):
-    text = user_input.lower()
 
-    if "my name is" in text:
-        match = re.search(r"my name is ([a-zA-Z]+)", user_input)
-        if match:
-            name = match.group(1).capitalize()
-            set_fact("name", name)
-            return f"I will remember your name as {name}."
+
+def process_memory(user_input):
+    import re
+
+    text = user_input.strip()
+
+    match = re.search(r"my name is\s+([a-zA-Z]+)", text, re.IGNORECASE)
+
+    if match:
+        name = match.group(1).capitalize()
+        set_fact("name", name)
+        return f"I will remember your name as {name}."
 
     return None
